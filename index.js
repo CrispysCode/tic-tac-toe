@@ -55,4 +55,29 @@ const Gameboard = (function() {
     };
 })();
 
-const Cell = (function)
+//Cell Factory function
+const Cell = (function() {
+    let marker = '';
+
+    function clearMarker() {
+        marker = '';
+    }
+
+    function setMarker() {
+        if (marker === '') {
+            marker = 'X';
+        } else if (marker === 'X') {
+            marker = 'O';
+        }
+    }
+
+    function getMarker() {
+        return marker;
+    }
+
+    return {
+        clearMarker,
+        getMarker,
+        setMarker
+    }
+})();
