@@ -1,111 +1,58 @@
+
 //Gameboard factory
+const Gameboard = (function() {
+    const container = document.querySelector(".container");
+    let board;
+    const rows = 3;
+    const cols = 3;
 
-const Gameboard = (() => {
-    const board = ["", "", "", "", "", "", "", "", ""];    
+    function newBoard() {
+        board = [];
 
-    const getBoard = () => board.slice();
-
-    const setCell = (index, playerMark) => {
-        if (index >0 && index < 9 && board.index === "") {
-            return true;
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < cols; j++) {
+                board[i].push("");
+            }
         }
-        return false;
+        render();
     }
 
-    const resetBoard = () => {
-        board.textContent = board;
+    function setBoard(row, col, currentPlayer) {
+        board[row][col] = currentPlayer;
+
+        render();
     }
-    return { getBoard, setCell, resetBoard }
-})();
-
-//Player Object
-
-const Player = (name, mark) => {
-   const getName = () => name;
-   const getMark = () => mark;
-
-   return { getName, getMark };
-};
-
-//GameController Module
-
-const GameController = (() => {
-    let players = [];
-    let currentPlayerIndex = 0;
-    let isGameActive = true;
-
-    const winningConditions = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8], 
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
+    function getBoard() {
+        return board;
+    }
     
-    const startGame = (player1, player2) => {
-        players = [player1, player2];
-        currentPlayerIndex = 0;
-        isGameActive = true;
-        Gameboard.resetBoard();
-    };
+    function render() {
+        container.replaceChildren();
 
-    const getPlayer = () => players.currentPlayerIndex;
+        for (let i = 0; i < rows; i++) {
+            const row = document.createElement('div');
 
-    const playRound = (index) => {
-        if (!isGameActive) {
-            console.log("Game is not active. Please reset");
-            return;
+            row.classList.add("row");
+            container.appendChild(row);
+
+            for (let j = 0; j < cols; j++) {
+                const cell = document.createElement('div');
+                cell.classList.add("cell");
+
+                cell.setAttribute("data-row", `${i}`);
+                cell.setAttribute("data-col", `${i}`);
+
+                cell.textContent = board[i][j];
+                row.appendChild(cell);
+            }
         }
-
-        const currentPlayer = getPlayer();
-        const playersMark = Gameboard.setCell(index, currentPlayer.getMark());
-
-        if (!playersMark) {
-            console.log("Invalid Move!");
-            return;
-        }
-
-        if (checkWin(currentPlayer.getMark())) {
-            isGameActive = false;
-            console.log(`Player ${currentPlayer.getName()} wins!`);
-            return;
-        }
-
-        if (checkTie()) {
-            isGameActive = false;
-            console.log("Tie!");
-            return;
-        }
-
-        switchPlayer();
     }
-
-    const switchPlayer = () => {
-        currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
-        console.log(`Player ${getPlayer().getName()}'s turn (${getPlayer().getMark()})`);
-    }
-
-    const checkWin = (marker) => {
-        const board = Gameboard.getBoard();
-        return winningConditions.some((condition) =>
-        condition.every((index) => board.index === marker));
-    };
-
-    const checkTie = () => {
-        return Gameboard.getBoard().every((cell) => cell !== "");
-    };
-
-    const getGameStatus = () => {
-        return isGameActive ? "Active" : "Ended";
-    }
-
     return {
-        startGame,
-        playRound,
-        getPlayer,
-        getGameStatus
+        newBoard,
+        setBoard,
+        getBoard
     };
 })();
+
+const Cell = (function)
